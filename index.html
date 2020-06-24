@@ -4,9 +4,35 @@
 <head>
     <meta charset="utf-8" />
     <title>Game Nhay Lau</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            padding:0px;
+        }
+        .MainBox {
+            line-height: 0;
+            width: 800px;
+            height:600px;
+            margin: 0 auto;
+            background-color: brown;
+        }
+        canvas{
+            height:600px;
+            width:800px;
+            background-image: url("night.jpg");
+        }
+    </style>
 </head>
 <body>
-    <div>
+    <div class="MainBox">
+        <canvas id="MyCanvas">
+
+        </canvas>
+
     </div>
+    <script>
+        let canvas=document.getElementById("MyCanvas");
+        var ctx = canvas.getContext("2d");
+    </script>
 </body>
 </html>
