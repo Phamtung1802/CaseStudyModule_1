@@ -54,34 +54,57 @@
             this.width = width;
             this.height = height;
     }   
-
     let bird= new ImageObj();
-    bird.init(100,100,5,6);
-    function draw(){
-        //khong truyen duoc tham so vao drawImages
+    let YJump=0;
+    let Jumping=false;
+    let Dropping=true;
+    let speed=1;
+    let speedcount=1;
+    bird.init(100,100,800,600)
+    
+    function dead(){
         ctxMain.drawImage(bird.bird,bird.x,bird.y)
-        window.requestAnimationFrame(draw);
-    }
+    } 
+
     function jump(){
         ctxMain.clearRect(0, 0, 800, 600)
-        ctxMain.drawImage(bird.bird,bird.x,bird.y-=2)
-        if(bird.y<20){
-            window.requestAnimationFrame(drop)
+        if(Dropping==false){
+        ctxMain.drawImage(bird.bird,bird.x,bird.y-=1)
+        console.log("jump")
         }
-        console.log(bird.y)
+        if(bird.y<YJump-40){
+            Dropping=true;
+            console.log("chuyen sang drop")
+            drop()
+            return;
+        }
         window.requestAnimationFrame(jump);
        
     }
     function drop(){
-        ctxMain.clearRect(0, 0, 800, 600)
-        ctxMain.drawImage(bird.bird,bird.x,bird.y+=2)
-        if(bird.y>80){
-            return
+        if(bird.y<115){
+        //se thay the chuc nang kiem tra co cham mat dat khong sau
+            if(Dropping==true){
+                ctxMain.clearRect(0, 0, 800, 600)
+                ctxMain.drawImage(bird.bird,bird.x,bird.y+=1)
+            }
+            else {
+                return;
+            }
         }
+        else{
+            window.requestAnimationFrame(dead)
+        }
+        console.log("drop" +Dropping+" bird "+bird.y)
         window.requestAnimationFrame(drop);
     }
     function whenPressSpace(){
-            jump();
+        YJump=bird.y;
+        if(Dropping==true){
+        Dropping=false;
+        speed++;
+        jump();
+        }   
             
      }
         
