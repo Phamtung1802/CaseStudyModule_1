@@ -20,29 +20,75 @@
             height:600px;
             width:800px;
             position: absolute;
+        }
+        #Mainlayer{
+            z-index: 1;
+        } 
+        #BackgroundLayer{
+            z-index: 0;
         } 
     </style>
 </head>
 <body>
     <div class="MainBox">
         <canvas id="Mainlayer"></canvas>
-        <!-- <canvas id="BackgroundLayer"></canvas> -->
+        <canvas id="BackgroundLayer"></canvas>
    
 
     </div>
-    <!-- <script src="background.js"></script> -->
+    <script src="background.js"></script>
+    <!-- <script src="Object.js"></script> -->
     
     <script>
-    window.onload=function() {    
     let Mainlayer = document.getElementById('Mainlayer'); 
     let ctxMain = Mainlayer.getContext('2d'); 
-    let character=new Image();
-    character.src="cloud.png"
-    ctxMain.beginPath();
-    ctxMain.arc(100, 75, 50, 0, 2 * Math.PI);
-    ctxMain.stroke();  
-    console.log(character)
+    function ImageObj(){
+        this.bird=new Image();
+        this.bullet= new Image();
+        this.bird.src = "bird.png";
+        this.bullet.src = "bullet.png";
     }
+    ImageObj.prototype.init=function(x, y, width, height){
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+    }   
+
+    let bird= new ImageObj();
+    bird.init(100,100,5,6);
+    function draw(){
+        //khong truyen duoc tham so vao drawImages
+        ctxMain.drawImage(bird.bird,bird.x,bird.y)
+        window.requestAnimationFrame(draw);
+    }
+    function jump(){
+        ctxMain.clearRect(0, 0, 800, 600)
+        ctxMain.drawImage(bird.bird,bird.x,bird.y-=2)
+        if(bird.y<20){
+            window.requestAnimationFrame(drop)
+        }
+        console.log(bird.y)
+        window.requestAnimationFrame(jump);
+       
+    }
+    function drop(){
+        ctxMain.clearRect(0, 0, 800, 600)
+        ctxMain.drawImage(bird.bird,bird.x,bird.y+=2)
+        if(bird.y>80){
+            return
+        }
+        window.requestAnimationFrame(drop);
+    }
+    function whenPressSpace(){
+            jump();
+            
+     }
+        
+    
+    window.addEventListener("keypress",whenPressSpace);  
+     
+    
     </script>
 </body>
 </html>
