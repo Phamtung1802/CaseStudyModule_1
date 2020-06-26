@@ -16,9 +16,10 @@
  ctxBack.drawImage(img,-(background.width-imgWidth),0)
  }
  imgWidth -= scrollSpeed; 
-
- if (imgWidth == -background.width) 
+ 
+ if (imgWidth == -background.width){
      imgWidth = 800; 
+   }
  window.requestAnimationFrame(loopBack);
  } 
  loopBack();
