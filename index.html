@@ -42,125 +42,120 @@
     
     <script>
     //ve con chim
+    let count=-1;
+ 
     let Mainlayer = document.getElementById('Mainlayer'); 
     let ctxMain = Mainlayer.getContext('2d'); 
+    let BulletLayer = document.getElementById('bulletLayer'); 
+    let ctxBullet = BulletLayer.getContext('2d'); 
+    
+
     function ImageObj(){
         this.bird=new Image();
         this.bullet= new Image();
         this.bird.src = "bird.png";
         this.bullet.src = "arrow.png";
-    }
-    ImageObj.prototype.init=function(x, y, width, height){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.ToaDo=[this.x,this.y];
-    }   
-    let bird= new ImageObj();
-    let YJump=0;
-    let Jumping=false;
-    let Dropping=true;
-    let speed=1;
-    let speedcount=1;
-    bird.init(100,100,800,600)
+        this.self=this;
 
-    function jump(){
-        ctxMain.clearRect(0, 0, 800, 600)
-        if(Dropping==false){
-        ctxMain.drawImage(bird.bird,bird.x,bird.y-=1)
-        bird.ToaDo=[bird.x,bird.y];
+        this.getBird=function(){
+            return this.bird;
         }
-        if(bird.y<YJump-30){
+    }
+    
+    ImageObj.prototype.init=function(x, y, width, height,layer,Dropping){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.layer=layer;
+        this.Dropping=Dropping
+        this.ToaDo=[this.x,this.y];
+    }
+
+    ImageObj.prototype.jump=function(self){
+        self.layer.clearRect(0, 0, 800, 600)
+        if(self.Dropping==false){
+        self.layer.drawImage(self.bird,self.x,self.y-=1)
+        self.ToaDo=[self.x,self.y];
+        }
+        if(self.y<self.ToaDoNhay-30){
             Dropping=true;
-            drop()
+            self.drop(self);
             return;
         }
-        window.requestAnimationFrame(jump);
-       
+        window.requestAnimationFrame(function() {self.jump(self)});
+    } 
+    
+    ImageObj.prototype.movingBullet=function(self,num1,num2,num4,num5){
+        self.layer.drawImage(self.bullet,self.x-=num1,self.y)
+        console.log(self.x)
+        self.ToaDo[0]=self.x;
+        self.ToaDo[1]=self.y;
+        if(self.x<num2){
+            self.x=290;
+            self.y=randomInteger(num4,num5);   
+        }
     }
-    function drop(){
-        if(bird.y<110){
+
+    ImageObj.prototype.checkCollide=function (char,a){
+        
+    }
+
+    ImageObj.prototype.whenPressSpace=function(){
+        this.ToaDoNhay=this.y;
+        if(this.Dropping==true){
+            this.Dropping=false;
+        jump();
+        }   
+    }
+
+    // window.addEventListener("keypress",bwhenPressSpace());
+    function randomInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    ImageObj.prototype.drop=function(self){
+        if(self.y<110){
         //se thay the chuc nang kiem tra co cham mat dat khong sau
-            if(Dropping==true){
-                ctxMain.clearRect(0, 0, 800, 600)
-                ctxMain.drawImage(bird.bird,bird.x,bird.y+=1)
+            if(self.Dropping==true){
+                self.layer.clearRect(0,0,800,600)
+                self.layer.drawImage(self.bird,self.x,self.y+=1)
             }
             else {
                 return;
             }
-            bird.ToaDo=[bird.x,bird.y];
+            self.ToaDo=[self.x,self.y];
         }
-        else{
-            window.requestAnimationFrame(dead)
-        }
-        window.requestAnimationFrame(drop);
+        window.requestAnimationFrame(function() {self.drop(self)})
     }
-    function whenPressSpace(nhay){
-        YJump=bird.y;
-        if(Dropping==true){
-        Dropping=false;
-        speed++;
-        jump();
-        }   
+
+
+
+    function BulletRain(self1,self2,self3,char){
+        self1.layer.clearRect(0, 0, 800, 600)
+        self1.movingBullet(self1,5,-10,0,30)
+        self2.movingBullet(self2,6,-90,40,60)
+        self3.movingBullet(self3,8,-10,60,100)
+        self1.checkCollide(char,self1);
+        self2.checkCollide(char,self2);
+        self3.checkCollide(char,self3);
+        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3)});
     }
-   
-    // Ve vien dan
-    function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    let BulletLayer = document.getElementById('bulletLayer'); 
-    let ctxBullet = BulletLayer.getContext('2d'); 
+    
     let Bullet=new ImageObj();
     let Bullet2=new ImageObj();
     let Bullet3=new ImageObj();
-    Bullet.init(290,30,800,600);
-    Bullet2.init(290,60,800,600);
-    Bullet3.init(290,90,800,600);  
-    function movingBullet(){
-        ctxBullet.clearRect(0, 0, 800, 600)
-        ctxBullet.drawImage(Bullet.bullet,Bullet.x-=6,Bullet.y)
-        Bullet.ToaDo[0]=Bullet.x;
-        Bullet.ToaDo[1]=Bullet.y;
-        ctxBullet.drawImage(Bullet2.bullet,Bullet2.x-=5,Bullet2.y)
-        Bullet2.ToaDo[0]=Bullet2.x;
-        Bullet2.ToaDo[1]=Bullet2.y;
-        ctxBullet.drawImage(Bullet3.bullet,Bullet3.x-=7,Bullet3.y)
-        Bullet3.ToaDo[0]=Bullet3.x;
-        Bullet3.ToaDo[1]=Bullet3.y;
-        checkCollide(bird.ToaDo,Bullet.ToaDo,Bullet2.ToaDo,Bullet3.ToaDo);
-        if(Bullet.x==-70){
-            Bullet.x=290;
-            Bullet.y=randomInteger(0,30);
-           
-        }
-        if(Bullet2.x==-30){
-            Bullet2.x=290;
-            Bullet2.y=randomInteger(30,60);
-        }
-        if(Bullet3.x==-60){
-            Bullet3.x=290;
-            Bullet3.y=randomInteger(60,90);
-        }
-        window.requestAnimationFrame(movingBullet);
+    let bird= new ImageObj();
 
-    } 
-    function checkCollide(char,a1,a2,a3){
-        if((char[0]+5<=a1[0]+10)&&(char[0]-5>=a1[0]-10)&&(char[1]>=a1[1]-2)&&(char[1]<=a1[1]+2)){
-            alert("you are dead")
-            console.log("arrow1 "+a1+" Bird "+char)
-        }
-        if((char[0]+5<=a2[0]+10)&&(char[0]-5>=a2[0]-10)&&(char[1]>=a2[1]-2)&&(char[1]<=a2[1]+2)){
-            alert("you are dead")
-            console.log("arrow2 "+a2+" Bird "+char)
-        }
-        if((char[0]+5<=a3[0]+10)&&(char[0]-5>=a3[0]-10)&&(char[1]>=a3[1]-2)&&(char[1]<=a3[1]+2)){
-            alert("you are dead")
-            console.log("arrow3 "+a3+" Bird "+char)
-        }
-    }
-    movingBullet();
-    let nhay = window.addEventListener("keypress",whenPressSpace);  //chim nhay
+    bird.init(0,5,800,600,ctxMain,true);
+    Bullet.init(0,5,800,600,ctxBullet,true);
+    Bullet2.init(0,50,800,600,ctxBullet,true);
+    Bullet3.init(0,80,800,600,ctxBullet,true);
+
+    bird.drop(bird);
+    BulletRain(Bullet,Bullet2,Bullet3,bird);
+
+
     </script>
 </body>
 </html>
