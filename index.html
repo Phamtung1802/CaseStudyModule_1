@@ -79,7 +79,7 @@
         self.ToaDo=[self.x,self.y];
         }
         if(self.y<self.ToaDoNhay-30){
-            Dropping=true;
+            self.Dropping=true;
             self.drop(self);
             return;
         }
@@ -88,7 +88,6 @@
     
     ImageObj.prototype.movingBullet=function(self,num1,num2,num4,num5){
         self.layer.drawImage(self.bullet,self.x-=num1,self.y)
-        console.log(self.x)
         self.ToaDo[0]=self.x;
         self.ToaDo[1]=self.y;
         if(self.x<num2){
@@ -97,15 +96,20 @@
         }
     }
 
-    ImageObj.prototype.checkCollide=function (char,a){
-        
-    }
-
-    ImageObj.prototype.whenPressSpace=function(){
-        this.ToaDoNhay=this.y;
-        if(this.Dropping==true){
-            this.Dropping=false;
-        jump();
+    ImageObj.prototype.checkCollide=function (a1,char){
+        console.log((char[0]+5<=a1[0]+10))
+        console.log((char[0]-5>=a1[0]-10))
+        console.log((char[1]>=a1[1]-20))
+        console.log((char[1]<=a1[1]+20))
+        if((char[0]+5<=a1[0]+10)&&(char[0]-5>=a1[0]-10)&&(char[1]>=a1[1]-20)&&(char[1]<=a1[1]+20))
+            alert('you are dead');
+        }
+    
+    ImageObj.prototype.whenPressSpace=function(self){
+        self.ToaDoNhay=self.y;
+        if(self.Dropping==true){
+            self.Dropping=false;
+            self.jump(self);
         }   
     }
 
@@ -129,6 +133,8 @@
         window.requestAnimationFrame(function() {self.drop(self)})
     }
 
+    
+
 
 
     function BulletRain(self1,self2,self3,char){
@@ -136,10 +142,10 @@
         self1.movingBullet(self1,5,-10,0,30)
         self2.movingBullet(self2,6,-90,40,60)
         self3.movingBullet(self3,8,-10,60,100)
-        self1.checkCollide(char,self1);
-        self2.checkCollide(char,self2);
-        self3.checkCollide(char,self3);
-        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3)});
+        self1.checkCollide(self1,char);
+        self2.checkCollide(self2,char);
+        self3.checkCollide(self3,char);
+        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,char)});
     }
     
     let Bullet=new ImageObj();
@@ -147,13 +153,14 @@
     let Bullet3=new ImageObj();
     let bird= new ImageObj();
 
-    bird.init(0,5,800,600,ctxMain,true);
+    bird.init(80,40,800,600,ctxMain,true);
     Bullet.init(0,5,800,600,ctxBullet,true);
     Bullet2.init(0,50,800,600,ctxBullet,true);
     Bullet3.init(0,80,800,600,ctxBullet,true);
-
     bird.drop(bird);
     BulletRain(Bullet,Bullet2,Bullet3,bird);
+    window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
+
 
 
     </script>
