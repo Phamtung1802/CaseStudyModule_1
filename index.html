@@ -35,10 +35,8 @@
 <body>
     <div class="MainBox">
         <canvas id="Mainlayer"></canvas>
-        <canvas id="BackgroundLayer"></canvas>
+        <canvas id="BackgroundLayer" width = "800" height = "600"></canvas>
         <canvas id="bulletLayer"></canvas>
-        <canvas id="Score"></canvas>
-
     </div>
     <script src="background.js"></script>
     <!-- <script src="Object.js"></script> -->
@@ -55,9 +53,11 @@
         this.bird=new Image();
         this.bullet= new Image();
         this.coin=new Image(); 
+        this.front=new Image()
         this.bird.src = "bird.png";
         this.bullet.src = "arrow.png";
         this.coin.src="coin.png";
+        this.front.src="Banner.png"
         this.self=this;
  
     }
@@ -95,7 +95,7 @@
     ImageObj.prototype.movingBullet=function(self,num1,num2,num4,num5){
         self.layer.font="10px Tahoma";
         self.layer.fillStyle ="White";
-        self.layer.fillText("score "+ score, 120, 140 ); 
+        self.layer.fillText("score "+ score, 130, 140 ); 
         self.layer.drawImage(self.bullet,self.x-=num1,self.y)
 
         self.ToaDo[0]=self.x;
@@ -104,6 +104,14 @@
             self.x=290;
             self.y=randomInteger(num4,num5);  
         }  
+    }
+    ImageObj.prototype.StartBanner=function(self){
+        self.layer.font="10px Tahoma";
+        self.layer.fillStyle ="Black";
+        self.layer.fillText("Press Space to Start ", 110, 100 ); 
+        self.layer.fillText("High Score "+score, 110, 120 ); 
+        self.layer.drawImage(self.front,52,10);
+        window.requestAnimationFrame(function() {self.StartBanner(self)});
     }
     ImageObj.prototype.movingCoin=function(self,num1,num2,num4,num5,chim){
         self.layer.drawImage(self.coin,self.x-=num1,self.y)
@@ -216,6 +224,7 @@ let Bullet=new ImageObj();
 let Bullet2=new ImageObj(); 
 let Bullet3=new ImageObj();
 let Bullet4=new ImageObj();
+let Banner= new ImageObj();
 let coin= new ImageObj();
 let bird= new ImageObj();
 let BlueSkyBG=new backgroundClass(800,600,"PixelArt.png",4)
@@ -227,11 +236,14 @@ Bullet2.init(0,50,800,600,ctxBullet,true);
 Bullet3.init(0,80,800,600,ctxBullet,true);
 Bullet4.init(0,0,800,600,ctxBullet,true); 
 coin.init(0,80,800,600,ctxBullet,true);
-bird.drop(bird);
-BulletRain(Bullet,Bullet2,Bullet3,coin,bird);
+Banner.init(0,80,800,600,ctxBullet,true)
+// bird.drop(bird);
+// BulletRain(Bullet,Bullet2,Bullet3,coin,bird);
 window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
+
 BlueSkyBG.InitContext();
 BlueSkyBG.running(BlueSkyBG)
+Banner.StartBanner(Banner);
 
 
 
