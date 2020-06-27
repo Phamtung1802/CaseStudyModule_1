@@ -172,78 +172,78 @@
         window.requestAnimationFrame(function() {self.drop(self)})
     }
 
-function backgroundClass(width,height,baseImage,scrollSpeed){
-  this.background=document.getElementById('BackgroundLayer');
-  this.background.width=800;
-  this.background.height=600;  
-  this.width=width
-  this.height=height
-  this.img=new Image()
-  this.self=this
-  this.img.src=baseImage
-  this.imgWidth = 800;
-  this.scrollSpeed=scrollSpeed;
-}
-backgroundClass.prototype.InitContext= function(){
-    this.ctxBack=this.background.getContext('2d'); 
-}
+    function backgroundClass(width,height,baseImage,scrollSpeed){
+    this.background=document.getElementById('BackgroundLayer');
+    this.background.width=800;
+    this.background.height=600;  
+    this.width=width
+    this.height=height
+    this.img=new Image()
+    this.self=this
+    this.img.src=baseImage
+    this.imgWidth = 800;
+    this.scrollSpeed=scrollSpeed;
+    }
+    backgroundClass.prototype.InitContext= function(){
+        this.ctxBack=this.background.getContext('2d'); 
+    }
 
 
-backgroundClass.prototype.running=function(self){
-  self.ctxBack.drawImage(self.img,self.imgWidth, 0); 
-  if(self.background .width+self.imgWidth<800){ 
-  self.ctxBack.drawImage(self.img,self.background.width+self.imgWidth,0); 
-  }
-  else {
-    self.ctxBack.drawImage(self.img,-(self.background.width-self.imgWidth),0)
-  }
-  self.imgWidth -= self.scrollSpeed; 
-  if (self.imgWidth == -self.background.width){
-    self.imgWidth = 800; 
-  }
-  window.requestAnimationFrame(function() {self.running(self)});
-}
+    backgroundClass.prototype.running=function(self){
+    self.ctxBack.drawImage(self.img,self.imgWidth, 0); 
+    if(self.background .width+self.imgWidth<800){ 
+    self.ctxBack.drawImage(self.img,self.background.width+self.imgWidth,0); 
+    }
+    else {
+        self.ctxBack.drawImage(self.img,-(self.background.width-self.imgWidth),0)
+    }
+    self.imgWidth -= self.scrollSpeed; 
+    if (self.imgWidth == -self.background.width){
+        self.imgWidth = 800; 
+    }
+    window.requestAnimationFrame(function() {self.running(self)});
+    }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
-function BulletRain(self1,self2,self3,self4,chim){
-    self1.layer.clearRect(0, 0, 800, 600)
-    self1.movingBullet(self1,5,-10,0,30)
-    self2.movingBullet(self2,6,-90,40,60)  
-    self3.movingBullet(self3,8,-10,60,100)
-    self4.movingCoin(self4,2,-120,0,110)
-    self1.checkCollide(self1,chim);  
-    self2.checkCollide(self2,chim);  
-    self3.checkCollide(self3,chim);
-    self4.checkCoinCollide(self4,chim); 
-    window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,self4,chim)});
-}
-let background = document.getElementById('BackgroundLayer');  
-let Bullet=new ImageObj(); 
-let Bullet2=new ImageObj(); 
-let Bullet3=new ImageObj();
-let Bullet4=new ImageObj();
-let Banner= new ImageObj();
-let coin= new ImageObj();
-let bird= new ImageObj();
-let BlueSkyBG=new backgroundClass(800,600,"PixelArt.png",4)
+    function BulletRain(self1,self2,self3,self4,chim){
+        self1.layer.clearRect(0, 0, 800, 600)
+        self1.movingBullet(self1,5,-10,0,30)
+        self2.movingBullet(self2,6,-90,40,60)  
+        self3.movingBullet(self3,8,-10,60,100)
+        self4.movingCoin(self4,2,-120,0,110)
+        self1.checkCollide(self1,chim);  
+        self2.checkCollide(self2,chim);  
+        self3.checkCollide(self3,chim);
+        self4.checkCoinCollide(self4,chim); 
+        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,self4,chim)});
+    }
+    let background = document.getElementById('BackgroundLayer');  
+    let Bullet=new ImageObj(); 
+    let Bullet2=new ImageObj(); 
+    let Bullet3=new ImageObj();
+    let Bullet4=new ImageObj();
+    let Banner= new ImageObj();
+    let coin= new ImageObj();
+    let bird= new ImageObj();
+    let BlueSkyBG=new backgroundClass(800,600,"PixelArt.png",4)
 
 
-bird.init(80,40,800,600,ctxMain,true);
-Bullet.init(0,5,800,600,ctxBullet,true);
-Bullet2.init(0,50,800,600,ctxBullet,true);
-Bullet3.init(0,80,800,600,ctxBullet,true);
-Bullet4.init(0,0,800,600,ctxBullet,true); 
-coin.init(0,80,800,600,ctxBullet,true);
-Banner.init(0,80,800,600,ctxBullet,true)
-// bird.drop(bird);
-// BulletRain(Bullet,Bullet2,Bullet3,coin,bird);
-window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
+    bird.init(80,40,800,600,ctxMain,true);
+    Bullet.init(0,5,800,600,ctxBullet,true);
+    Bullet2.init(0,50,800,600,ctxBullet,true);
+    Bullet3.init(0,80,800,600,ctxBullet,true);
+    Bullet4.init(0,0,800,600,ctxBullet,true); 
+    coin.init(0,80,800,600,ctxBullet,true);
+    Banner.init(0,80,800,600,ctxBullet,true)
+    // bird.drop(bird);
+    // BulletRain(Bullet,Bullet2,Bullet3,coin,bird);
+    window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
 
-BlueSkyBG.InitContext();
-BlueSkyBG.running(BlueSkyBG)
-Banner.StartBanner(Banner);
+    BlueSkyBG.InitContext();
+    BlueSkyBG.running(BlueSkyBG)
+    Banner.StartBanner(Banner);
 
 
 
