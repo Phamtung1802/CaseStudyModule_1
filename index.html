@@ -49,6 +49,8 @@
     let score=0
     let HighScore=0;
     let isStarted=false;
+    let isDead=false;
+    let background = document.getElementById('BackgroundLayer');  
     const droppingSpeed= 1;
     const bgSpeed=4;
     const ScreenHeight=600;
@@ -134,10 +136,12 @@
 
     ImageObj.prototype.checkCollide=function (arrow,chim){
         if((chim.ToaDo[0]+3>=arrow.ToaDo[0])&&(chim.ToaDo[0]-3<=arrow.ToaDo[0] )&&(chim.ToaDo[1]+2>=arrow.ToaDo[1])&&(chim.ToaDo[1]-4<=arrow.ToaDo[1])){
-            alert('you are dead');
+            HighScore=parseInt(window.localStorage.getItem('highScore'))
+            if(score>HighScore){
             HighScore=score;
             window.localStorage.setItem('highScore', JSON.stringify(HighScore));
-            return;
+            }
+            deadScreen();
         }
     }
     ImageObj.prototype.checkCoinCollide=function (coin,chim){
@@ -145,7 +149,7 @@
         score++;
         coin.x=-30;
         console.log(score) 
-        return  ;
+        return;
         }
     }      
     
@@ -180,7 +184,7 @@
             self.ToaDo=[self.x,self.y];
         }
         if(self.y==110){
-            alert('you are dead')
+            deadScreen();
             return;
         }
         window.requestAnimationFrame(function() {self.drop(self)})
@@ -205,18 +209,18 @@
 
 
     backgroundClass.prototype.running=function(self){
-    self.ctxBack.drawImage(self.img,self.imgWidth, 0); 
-    if(self.background .width+self.imgWidth<800){ 
-    self.ctxBack.drawImage(self.img,self.background.width+self.imgWidth,0); 
-    }
-    else {
-        self.ctxBack.drawImage(self.img,-(self.background.width-self.imgWidth),0)
-    }
-    self.imgWidth -= self.scrollSpeed; 
-    if (self.imgWidth == -self.background.width){
-        self.imgWidth = 800; 
-    }
-    window.requestAnimationFrame(function() {self.running(self)});
+        self.ctxBack.drawImage(self.img,self.imgWidth, 0); 
+        if(self.background .width+self.imgWidth<800){ 
+        self.ctxBack.drawImage(self.img,self.background.width+self.imgWidth,0); 
+        }
+        else {
+            self.ctxBack.drawImage(self.img,-(self.background.width-self.imgWidth),0)
+        }
+        self.imgWidth -= self.scrollSpeed; 
+        if (self.imgWidth == -self.background.width){
+            self.imgWidth = 800; 
+        }
+        window.requestAnimationFrame(function() {self.running(self)});
     }
 
 
@@ -231,7 +235,7 @@
         self1.checkCollide(self1,chim);  
         self2.checkCollide(self2,chim);  
         self3.checkCollide(self3,chim);
-        self4.checkCoinCollide(self4,chim); 
+        self4.checkCoinCollide(self4,chim);
         window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,self4,chim,Banner)});
     }
     
@@ -249,9 +253,13 @@
         }
         window.requestAnimationFrame(function() {WaitScreen(self1,self2,self3,self4,Banner)});
     }
+    function deadScreen(){
+        alert('You are dead\n'+'Score '+score);
+        location.reload();
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////// ////////
-    let background = document.getElementById('BackgroundLayer');  
+    
     let Bullet=new ImageObj(); 
     let Bullet2=new ImageObj(); 
     let Bullet3=new ImageObj();
@@ -265,13 +273,6 @@
     Bullet3.init(0,80,800,600,ctxBullet,true);
     Bullet4.init(0,0,800,600,ctxBullet,true); 
     coin.init(0,80,800,600,ctxBullet,true);
-
-
-
-    // bird.init(80,40,800,600,ctxMain,true);
-
-    // bird.drop(bird);
-    // BulletRain(Bullet,Bullet2,Bullet3,coin,bird,Banner);
     BlueSkyBG.InitContext();
     BlueSkyBG.running(BlueSkyBG);
     WaitScreen(Bullet,Bullet2,Bullet3,coin,Banner);
