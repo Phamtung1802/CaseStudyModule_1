@@ -47,6 +47,7 @@
     let BulletLayer = document.getElementById('bulletLayer'); 
     let ctxBullet = BulletLayer.getContext('2d'); 
     let score=0
+    let isStarted=false;
     
 
     function ImageObj(){
@@ -111,7 +112,6 @@
         self.layer.fillText("Press Space to Start ", 110, 100 ); 
         self.layer.fillText("High Score "+score, 110, 120 ); 
         self.layer.drawImage(self.front,52,10);
-        window.requestAnimationFrame(function() {self.StartBanner(self)});
     }
     ImageObj.prototype.movingCoin=function(self,num1,num2,num4,num5,chim){
         self.layer.drawImage(self.coin,self.x-=num1,self.y)
@@ -141,12 +141,13 @@
     }      
     
     ImageObj.prototype.whenPressSpace=function(self){
+        isStarted=true;
         self.ToaDoNhay=self.y;
         if(self.Dropping==true){
             self.Dropping=false;
             self.jump(self);
         }   
-    }
+    } 
 
     // window.addEventListener("keypress",bwhenPressSpace());
     function randomInteger(min, max) {
@@ -207,18 +208,23 @@
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
-    function BulletRain(self1,self2,self3,self4,chim){
+    function BulletRain(self1,self2,self3,self4,chim,Banner){
         self1.layer.clearRect(0, 0, 800, 600)
         self1.movingBullet(self1,5,-10,0,30)
         self2.movingBullet(self2,6,-90,40,60)  
         self3.movingBullet(self3,8,-10,60,100)
         self4.movingCoin(self4,2,-120,0,110)
+        if(isStarted==false){
+        Banner.StartBanner(Banner);
+        }
         self1.checkCollide(self1,chim);  
         self2.checkCollide(self2,chim);  
         self3.checkCollide(self3,chim);
         self4.checkCoinCollide(self4,chim); 
-        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,self4,chim)});
+        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,self4,chim,Banner)});
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////// ////////
     let background = document.getElementById('BackgroundLayer');  
     let Bullet=new ImageObj(); 
     let Bullet2=new ImageObj(); 
@@ -238,12 +244,12 @@
     coin.init(0,80,800,600,ctxBullet,true);
     Banner.init(0,80,800,600,ctxBullet,true)
     // bird.drop(bird);
-    // BulletRain(Bullet,Bullet2,Bullet3,coin,bird);
+    // BulletRain(Bullet,Bullet2,Bullet3,coin,bird,Banner);
+    // BlueSkyBG.InitContext();
+    // BlueSkyBG.running(BlueSkyBG)
     window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
 
-    BlueSkyBG.InitContext();
-    BlueSkyBG.running(BlueSkyBG)
-    Banner.StartBanner(Banner);
+    
 
 
 
