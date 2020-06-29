@@ -33,7 +33,7 @@
     <div class="MainBox">
         <canvas id="Mainlayer"></canvas>
         <canvas id="BackgroundLayer" width = "800" height = "600"></canvas>
-        <canvas id="bulletLayer"></canvas>
+        <canvas id="ArrowLayer"></canvas>
     </div>
     <script src="background.js"></script>
     <!-- <script src="Object.js"></script> -->
@@ -49,8 +49,8 @@
 
     let Mainlayer = document.getElementById('Mainlayer'); 
     let ctxMain = Mainlayer.getContext('2d'); 
-    let BulletLayer = document.getElementById('bulletLayer'); 
-    let ctxBullet = BulletLayer.getContext('2d'); 
+    let ArrowLayer = document.getElementById('ArrowLayer'); 
+    let ctxArrow = ArrowLayer.getContext('2d'); 
     let score=0
     let HighScore;
     if(HighScore==null&&window.localStorage.getItem('highScore')!=null){
@@ -65,11 +65,11 @@
 
     function ImageObj(){
         this.bird=new Image();
-        this.bullet= new Image();
+        this.Arrow= new Image();
         this.coin=new Image(); 
         this.front=new Image()
         this.bird.src = "bird.png";
-        this.bullet.src = "arrow.png";
+        this.Arrow.src = "arrow.png";
         this.coin.src="coin.png";
         this.front.src="Banner.png"
         this.self=this;
@@ -134,7 +134,7 @@
         self.layer.font="10px Tahoma";
         self.layer.fillStyle ="White";
         self.layer.fillText("score "+ score, 130, 140 ); 
-        self.layer.drawImage(self.bullet,self.x-=num1,self.y)
+        self.layer.drawImage(self.Arrow,self.x-=num1,self.y)
 
         self.ToaDo[0]=self.x;
         self.ToaDo[1]=self.y;
@@ -187,7 +187,7 @@
         if(isStarted==false){
             bird.setPositionValue(80,40,800,600,ctxMain,true);
             isStarted=true;
-            BulletRain(Bullet,Bullet2,Bullet3,coin,bird,Banner); 
+            ArrowDraw(Arrow,Arrow2,Arrow3,coin,bird,Banner); 
         }
         self.ToaDoNhay=self.y;
         if(self.Dropping==true){
@@ -242,7 +242,7 @@
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
-    function BulletRain(self1,self2,self3,self4,chim,Banner){
+    function ArrowDraw(self1,self2,self3,self4,chim,Banner){
         self1.layer.clearRect(0, 0, 800, 600)
         self1.drawFlyingArrow(self1,5,-10,0,30)
         self2.drawFlyingArrow(self2,6,-90,40,60)  
@@ -256,11 +256,11 @@
             deadScoreBoard(self1);
             return;
         }
-        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,self4,chim,Banner)});
+        window.requestAnimationFrame(function() {ArrowDraw(self1,self2,self3,self4,chim,Banner)});
     }
     
     function WaitScreen(self1,self2,self3,self4,Banner,background){
-        Banner.setPositionValue(0,80,800,600,ctxBullet,true)
+        Banner.setPositionValue(0,80,800,600,ctxArrow,true)
         self1.layer.clearRect(0, 0, 800, 600)
         self1.drawFlyingArrow(self1,5,-10,0,30)
         self2.drawFlyingArrow(self2,6,-90,40,60)  
@@ -289,7 +289,7 @@
         self.layer.font="13px Tahoma";
         self.layer.fillStyle ="Black";
         self.layer.fillText("GAME OVER!! ", 120, 65 ); 
-        self.layer.fillText(" Score "+score, 120, 88 ); 
+        self.layer.fillText(" SCORE "+score, 120, 88 ); 
         window.addEventListener("keypress",function replay(){
             location.reload()
         });
@@ -298,22 +298,22 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////// ////////
     
-    let Bullet=new ImageObj(); 
-    let Bullet2=new ImageObj(); 
-    let Bullet3=new ImageObj();
-    let Bullet4=new ImageObj();
+    let Arrow=new ImageObj(); 
+    let Arrow2=new ImageObj(); 
+    let Arrow3=new ImageObj();
+    let Arrow4=new ImageObj();
     let Banner= new ImageObj();
     let coin= new ImageObj();
     let bird= new ImageObj();
     let BlueSkyBG=new backgroundClass(ScreenWidth,ScreenHeight,"PixelArt.png",bgSpeed)
-    Bullet.setPositionValue(0,5,800,600,ctxBullet,true);
-    Bullet2.setPositionValue(0,50,800,600,ctxBullet,true);
-    Bullet3.setPositionValue(0,80,800,600,ctxBullet,true);
-    Bullet4.setPositionValue(0,0,800,600,ctxBullet,true); 
-    coin.setPositionValue(0,80,800,600,ctxBullet,true);
+    Arrow.setPositionValue(0,5,800,600,ctxArrow,true);
+    Arrow2.setPositionValue(0,50,800,600,ctxArrow,true);
+    Arrow3.setPositionValue(0,80,800,600,ctxArrow,true);
+    Arrow4.setPositionValue(0,0,800,600,ctxArrow,true); 
+    coin.setPositionValue(0,80,800,600,ctxArrow,true);
     BlueSkyBG.setPositionValueContext();
     BlueSkyBG.running(BlueSkyBG);
-    WaitScreen(Bullet,Bullet2,Bullet3,coin,Banner);
+    WaitScreen(Arrow,Arrow2,Arrow3,coin,Banner);
     window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
     
     
