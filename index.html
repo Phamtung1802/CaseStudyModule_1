@@ -76,10 +76,9 @@
         this.coin.src="coin.png";
         this.front.src="Banner.png"
         this.self=this;
- 
     }
     
-    ImageObj.prototype.init=function(x, y, width, height,layer,Dropping){
+    ImageObj.prototype.setPositionValue=function(x, y, width, height,layer,Dropping){
         this.x = x;
         this.y = y;
         this.width = width;
@@ -106,7 +105,6 @@
             self.drop(self);
             return;
         }
-        
         window.requestAnimationFrame(function() {self.jump(self)});
     } 
     
@@ -150,6 +148,7 @@
             HighScore=score;
             window.localStorage.setItem('highScore', JSON.stringify(HighScore));
             }
+            isDead=true;
             deadScreen();
         }
     }
@@ -164,7 +163,7 @@
     
     ImageObj.prototype.whenPressSpace=function(self){
         if(isStarted==false){
-            bird.init(80,40,800,600,ctxMain,true);
+            bird.setPositionValue(80,40,800,600,ctxMain,true);
             isStarted=true;
             BulletRain(Bullet,Bullet2,Bullet3,coin,bird,Banner); 
         }
@@ -212,7 +211,7 @@
     this.scrollSpeed=scrollSpeed;
     }
 
-    backgroundClass.prototype.InitContext= function(){
+    backgroundClass.prototype.setPositionValueContext= function(){
         this.ctxBack=this.background.getContext('2d'); 
     }
 
@@ -249,7 +248,7 @@
     }
     
     function WaitScreen(self1,self2,self3,self4,Banner,background){
-        Banner.init(0,80,800,600,ctxBullet,true)
+        Banner.setPositionValue(0,80,800,600,ctxBullet,true)
         self1.layer.clearRect(0, 0, 800, 600)
         self1.movingBullet(self1,5,-10,0,30)
         self2.movingBullet(self2,6,-90,40,60)  
@@ -277,12 +276,12 @@
     let coin= new ImageObj();
     let bird= new ImageObj();
     let BlueSkyBG=new backgroundClass(ScreenWidth,ScreenHeight,"PixelArt.png",bgSpeed)
-    Bullet.init(0,5,800,600,ctxBullet,true);
-    Bullet2.init(0,50,800,600,ctxBullet,true);
-    Bullet3.init(0,80,800,600,ctxBullet,true);
-    Bullet4.init(0,0,800,600,ctxBullet,true); 
-    coin.init(0,80,800,600,ctxBullet,true);
-    BlueSkyBG.InitContext();
+    Bullet.setPositionValue(0,5,800,600,ctxBullet,true);
+    Bullet2.setPositionValue(0,50,800,600,ctxBullet,true);
+    Bullet3.setPositionValue(0,80,800,600,ctxBullet,true);
+    Bullet4.setPositionValue(0,0,800,600,ctxBullet,true); 
+    coin.setPositionValue(0,80,800,600,ctxBullet,true);
+    BlueSkyBG.setPositionValueContext();
     BlueSkyBG.running(BlueSkyBG);
     WaitScreen(Bullet,Bullet2,Bullet3,coin,Banner);
     window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
