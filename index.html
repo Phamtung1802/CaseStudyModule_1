@@ -63,9 +63,6 @@
     }
 
 
-
-    
-
     function ImageObj(){
         this.bird=new Image();
         this.bullet= new Image();
@@ -99,19 +96,18 @@
             self.ToaDo=[self.x,self.y];
         }
         if(self.y>=110){
-            deadScreen();
+            turnToDead();
             return;
         }
         if(isDead==true){
-            deadScreen();
-            deadScoreBoard(self1);
+            turnToDead();
             return;
         }
         window.requestAnimationFrame(function() {self.drop(self)})
     }
 
 
-    ImageObj.prototype.jump=function(self){
+    ImageObj.prototype.jumpBird=function(self){
         self.layer.clearRect(0, 0, 800, 600)
         if(self.Dropping==false){
         self.layer.drawImage(self.bird,self.x,self.y-=droppingSpeed)
@@ -131,10 +127,10 @@
         if(isDead==true){
             return;
         }
-        window.requestAnimationFrame(function() {self.jump(self)});
+        window.requestAnimationFrame(function() {self.jumpBird(self)});
     } 
     
-    ImageObj.prototype.flyingArrow=function(self,num1,num2,num4,num5){
+    ImageObj.prototype.drawFlyingArrow=function(self,num1,num2,num4,num5){
         self.layer.font="10px Tahoma";
         self.layer.fillStyle ="White";
         self.layer.fillText("score "+ score, 130, 140 ); 
@@ -147,7 +143,7 @@
             self.y=randomInteger(num4,num5);  
         }
     }
-        ImageObj.prototype.flyingCoin=function(self,num1,num2,num4,num5,chim){
+        ImageObj.prototype.drawFlyingCoin=function(self,num1,num2,num4,num5,chim){
         self.layer.drawImage(self.coin,self.x-=num1,self.y)
         self.ToaDo[0]=self.x;
         self.ToaDo[1]=self.y;
@@ -169,13 +165,13 @@
     
     
 
-    ImageObj.prototype.checkCollision=function (arrow,chim){
+    ImageObj.prototype.checkArrowCollision=function (arrow,chim){
         if((chim.ToaDo[0]+3>=arrow.ToaDo[0])&&(chim.ToaDo[0]-3<=arrow.ToaDo[0] )&&(chim.ToaDo[1]+2>=arrow.ToaDo[1])&&(chim.ToaDo[1]-4<=arrow.ToaDo[1])){
             if(score>=HighScore){
             HighScore=score;
             window.localStorage.setItem('highScore', JSON.stringify(HighScore));
             }
-            deadScreen();
+            turnToDead();
         }
     }
     ImageObj.prototype.checkCoinCollision=function (coin,chim){
@@ -196,7 +192,7 @@
         self.ToaDoNhay=self.y;
         if(self.Dropping==true){
             self.Dropping=false;
-            self.jump(self);
+            self.jumpBird(self);
         }   
     } 
 
@@ -237,7 +233,7 @@
             self.imgWidth = 800; 
         }
         if(isDead==true){
-            deadScreen();
+            turnToDead();
             return;
         }
         window.requestAnimationFrame(function() {self.running(self)});
@@ -248,13 +244,13 @@
 
     function BulletRain(self1,self2,self3,self4,chim,Banner){
         self1.layer.clearRect(0, 0, 800, 600)
-        self1.flyingArrow(self1,5,-10,0,30)
-        self2.flyingArrow(self2,6,-90,40,60)  
-        self3.flyingArrow(self3,8,-10,60,100)
-        self4.flyingCoin(self4,2,-120,0,110)
-        self1.checkCollision(self1,chim);  
-        self2.checkCollision(self2,chim);  
-        self3.checkCollision(self3,chim);
+        self1.drawFlyingArrow(self1,5,-10,0,30)
+        self2.drawFlyingArrow(self2,6,-90,40,60)  
+        self3.drawFlyingArrow(self3,8,-10,60,100)
+        self4.drawFlyingCoin(self4,2,-120,0,110)
+        self1.checkArrowCollision(self1,chim);  
+        self2.checkArrowCollision(self2,chim);  
+        self3.checkArrowCollision(self3,chim);
         self4.checkCoinCollision(self4,chim);
         if(isDead==true){
             deadScoreBoard(self1);
@@ -266,18 +262,22 @@
     function WaitScreen(self1,self2,self3,self4,Banner,background){
         Banner.setPositionValue(0,80,800,600,ctxBullet,true)
         self1.layer.clearRect(0, 0, 800, 600)
-        self1.flyingArrow(self1,5,-10,0,30)
-        self2.flyingArrow(self2,6,-90,40,60)  
-        self3.flyingArrow(self3,8,-10,60,100)
-        self4.flyingCoin(self4,2,-120,0,110)
+        self1.drawFlyingArrow(self1,5,-10,0,30)
+        self2.drawFlyingArrow(self2,6,-90,40,60)  
+        self3.drawFlyingArrow(self3,8,-10,60,100)
+        self4.drawFlyingCoin(self4,2,-120,0,110)
         Banner.StartBanner(Banner.self);
         if(isStarted==true){
             self1.layer.clearRect(0, 0, 800, 600)
+            self1.x=-20
+            self2.x=-20
+            self3.x=-20
+            self4.x=-20  
             return;
         }
         window.requestAnimationFrame(function() {WaitScreen(self1,self2,self3,self4,Banner)});
     }
-    function deadScreen(){
+    function turnToDead(){
         isDead=true;
         // self.background.font="13px Tahoma";
         // self.background.fillStyle ="Black";
@@ -288,7 +288,7 @@
     function deadScoreBoard(self){
         self.layer.font="13px Tahoma";
         self.layer.fillStyle ="Black";
-        self.layer.fillText("GAME OVER ", 120, 65 ); 
+        self.layer.fillText("GAME OVER!! ", 120, 65 ); 
         self.layer.fillText(" Score "+score, 120, 88 ); 
         window.addEventListener("keypress",function replay(){
             location.reload()
