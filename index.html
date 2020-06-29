@@ -51,6 +51,10 @@
     if(HighScore==null&&window.localStorage.getItem('highScore')!=null){
         HighScore=window.localStorage.getItem('highScore');
     }
+    if(HighScore==null&&window.localStorage.getItem('highScore')==null){
+        HighScore=0;
+    }
+
 
 
     let isStarted=false;
