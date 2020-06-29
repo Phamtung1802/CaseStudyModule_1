@@ -27,9 +27,6 @@
         #BackgroundLayer{
             z-index: 0;
         } 
-        #Score{
-            z-index: 0;
-        } 
     </style>
 </head>
 <body>
@@ -42,6 +39,14 @@
     <!-- <script src="Object.js"></script> -->
     
     <script>
+    let isStarted=false;
+    let isDead=false;
+    let background = document.getElementById('BackgroundLayer');  
+    const droppingSpeed= 1;
+    const bgSpeed=4;
+    const ScreenHeight=600;
+    const ScreenWidth=800;
+
     let Mainlayer = document.getElementById('Mainlayer'); 
     let ctxMain = Mainlayer.getContext('2d'); 
     let BulletLayer = document.getElementById('bulletLayer'); 
@@ -51,19 +56,14 @@
     if(HighScore==null&&window.localStorage.getItem('highScore')!=null){
         HighScore=window.localStorage.getItem('highScore');
     }
-    if(HighScore==null&&window.localStorage.getItem('highScore')==null){
+    if(window.localStorage.getItem('highScore')==null){
         HighScore=0;
+        window.localStorage.setItem('highScore', JSON.stringify(HighScore));
+        console.log("highscore set =0")
     }
 
 
 
-    let isStarted=false;
-    let isDead=false;
-    let background = document.getElementById('BackgroundLayer');  
-    const droppingSpeed= 1;
-    const bgSpeed=4;
-    const ScreenHeight=600;
-    const ScreenWidth=800;
     
 
     function ImageObj(){
@@ -106,6 +106,7 @@
             self.drop(self);
             return;
         }
+        
         window.requestAnimationFrame(function() {self.jump(self)});
     } 
     
