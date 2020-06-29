@@ -27,140 +27,261 @@
         #BackgroundLayer{
             z-index: 0;
         } 
+        #Score{
+            z-index: 0;
+        } 
     </style>
 </head>
 <body>
     <div class="MainBox">
         <canvas id="Mainlayer"></canvas>
-        <canvas id="BackgroundLayer"></canvas>
+        <canvas id="BackgroundLayer" width = "800" height = "600"></canvas>
         <canvas id="bulletLayer"></canvas>
-   
-
     </div>
     <script src="background.js"></script>
     <!-- <script src="Object.js"></script> -->
     
     <script>
-    //ve con chim
     let Mainlayer = document.getElementById('Mainlayer'); 
     let ctxMain = Mainlayer.getContext('2d'); 
+    let BulletLayer = document.getElementById('bulletLayer'); 
+    let ctxBullet = BulletLayer.getContext('2d'); 
+    let score=0
+    let HighScore=0;
+    let isStarted=false;
+    let isDead=false;
+    let background = document.getElementById('BackgroundLayer');  
+    const droppingSpeed= 1;
+    const bgSpeed=4;
+    const ScreenHeight=600;
+    const ScreenWidth=800;
+    
+
     function ImageObj(){
         this.bird=new Image();
         this.bullet= new Image();
+        this.coin=new Image(); 
+        this.front=new Image()
         this.bird.src = "bird.png";
         this.bullet.src = "arrow.png";
+        this.coin.src="coin.png";
+        this.front.src="Banner.png"
+        this.self=this;
+ 
     }
-    ImageObj.prototype.init=function(x, y, width, height){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.ToaDo=[this.x,this.y];
-    }   
-    let bird= new ImageObj();
-    let YJump=0;
-    let Jumping=false;
-    let Dropping=true;
-    let speed=1;
-    let speedcount=1;
-    bird.init(100,100,800,600)
+    
+    ImageObj.prototype.init=function(x, y, width, height,layer,Dropping){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.layer=layer;
+        this.Dropping=Dropping
+        this.ToaDo=[this.x,this.y];
+    }
 
-    function jump(){
-        ctxMain.clearRect(0, 0, 800, 600)
-        if(Dropping==false){
-        ctxMain.drawImage(bird.bird,bird.x,bird.y-=1)
-        bird.ToaDo=[bird.x,bird.y];
+    ImageObj.prototype.jump=function(self){
+        self.layer.clearRect(0, 0, 800, 600)
+        if(self.Dropping==false){
+        self.layer.drawImage(self.bird,self.x,self.y-=droppingSpeed)
+        self.ToaDo=[self.x,self.y];
         }
-        if(bird.y<YJump-30){
-            Dropping=true;
-            drop()
+        if(self.y<self.ToaDoNhay-30){
+            self.Dropping=true;
+            self.drop(self);
             return;
         }
-        window.requestAnimationFrame(jump);
-       
+        if(self.y<-5){
+            self.y=-4
+            self.Dropping=true;
+            self.drop(self);
+            return;
+        }
+        window.requestAnimationFrame(function() {self.jump(self)});
+    } 
+    
+    ImageObj.prototype.movingBullet=function(self,num1,num2,num4,num5){
+        self.layer.font="10px Tahoma";
+        self.layer.fillStyle ="White";
+        self.layer.fillText("score "+ score, 130, 140 ); 
+        self.layer.drawImage(self.bullet,self.x-=num1,self.y)
+
+        self.ToaDo[0]=self.x;
+        self.ToaDo[1]=self.y;
+        if(self.x<num2){
+            self.x=290;
+            self.y=randomInteger(num4,num5);  
+        }  
     }
-    function drop(){
-        if(bird.y<110){
+
+    ImageObj.prototype.StartBanner=function(self){
+        self.layer.font="10px Tahoma";
+        self.layer.fillStyle ="Black";
+        self.layer.fillText("Press Space to Start ", 110, 100 ); 
+        self.layer.fillText("High Score "+window.localStorage.getItem('highScore'), 110, 120 ); 
+        self.layer.drawImage(self.front,52,10);
+    }
+
+    ImageObj.prototype.movingCoin=function(self,num1,num2,num4,num5,chim){
+        self.layer.drawImage(self.coin,self.x-=num1,self.y)
+        self.ToaDo[0]=self.x;
+        self.ToaDo[1]=self.y;
+        if(self.x<num2){
+            self.x=290;
+            self.y=randomInteger(num4,num5);    
+        }  
+    }
+    
+    
+
+    ImageObj.prototype.checkCollide=function (arrow,chim){
+        if((chim.ToaDo[0]+3>=arrow.ToaDo[0])&&(chim.ToaDo[0]-3<=arrow.ToaDo[0] )&&(chim.ToaDo[1]+2>=arrow.ToaDo[1])&&(chim.ToaDo[1]-4<=arrow.ToaDo[1])){
+            HighScore=parseInt(window.localStorage.getItem('highScore'))
+            if(score>HighScore){
+            HighScore=score;
+            window.localStorage.setItem('highScore', JSON.stringify(HighScore));
+            }
+            deadScreen();
+        }
+    }
+    ImageObj.prototype.checkCoinCollide=function (coin,chim){
+    if((chim.ToaDo[0]+3>=coin.ToaDo[0])&&(chim.ToaDo[0]-3<=coin.ToaDo[0] )&&(chim.ToaDo[1]+7>=coin.ToaDo[1])&&(chim.ToaDo[1]-7<=coin.ToaDo[1])){
+        score++;
+        coin.x=-30;
+        console.log(score) 
+        return;
+        }
+    }      
+    
+    ImageObj.prototype.whenPressSpace=function(self){
+        if(isStarted==false){
+            bird.init(80,40,800,600,ctxMain,true);
+            isStarted=true;
+            BulletRain(Bullet,Bullet2,Bullet3,coin,bird,Banner); 
+        }
+        self.ToaDoNhay=self.y;
+        if(self.Dropping==true){
+            self.Dropping=false;
+            self.jump(self);
+        }   
+    } 
+
+    // window.addEventListener("keypress",bwhenPressSpace());
+    function randomInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    ImageObj.prototype.drop=function(self){
+        if(self.y<110){
         //se thay the chuc nang kiem tra co cham mat dat khong sau
-            if(Dropping==true){
-                ctxMain.clearRect(0, 0, 800, 600)
-                ctxMain.drawImage(bird.bird,bird.x,bird.y+=1)
+            if(self.Dropping==true){
+                self.layer.clearRect(0,0,800,600)
+                self.layer.drawImage(self.bird,self.x,self.y+=droppingSpeed)
             }
             else {
                 return;
             }
-            bird.ToaDo=[bird.x,bird.y];
+            self.ToaDo=[self.x,self.y];
         }
-        else{
-            window.requestAnimationFrame(dead)
+        if(self.y==110){
+            deadScreen();
+            return;
         }
-        window.requestAnimationFrame(drop);
+        window.requestAnimationFrame(function() {self.drop(self)})
     }
-    function whenPressSpace(nhay){
-        YJump=bird.y;
-        if(Dropping==true){
-        Dropping=false;
-        speed++;
-        jump();
-        }   
-    }
-   
-    // Ve vien dan
-    function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    let BulletLayer = document.getElementById('bulletLayer'); 
-    let ctxBullet = BulletLayer.getContext('2d'); 
-    let Bullet=new ImageObj();
-    let Bullet2=new ImageObj();
-    let Bullet3=new ImageObj();
-    Bullet.init(290,30,800,600);
-    Bullet2.init(290,60,800,600);
-    Bullet3.init(290,90,800,600);  
-    function movingBullet(){
-        ctxBullet.clearRect(0, 0, 800, 600)
-        ctxBullet.drawImage(Bullet.bullet,Bullet.x-=6,Bullet.y)
-        Bullet.ToaDo[0]=Bullet.x;
-        Bullet.ToaDo[1]=Bullet.y;
-        ctxBullet.drawImage(Bullet2.bullet,Bullet2.x-=5,Bullet2.y)
-        Bullet2.ToaDo[0]=Bullet2.x;
-        Bullet2.ToaDo[1]=Bullet2.y;
-        ctxBullet.drawImage(Bullet3.bullet,Bullet3.x-=7,Bullet3.y)
-        Bullet3.ToaDo[0]=Bullet3.x;
-        Bullet3.ToaDo[1]=Bullet3.y;
-        checkCollide(bird.ToaDo,Bullet.ToaDo,Bullet2.ToaDo,Bullet3.ToaDo);
-        if(Bullet.x==-70){
-            Bullet.x=290;
-            Bullet.y=randomInteger(0,30);
-           
-        }
-        if(Bullet2.x==-30){
-            Bullet2.x=290;
-            Bullet2.y=randomInteger(30,60);
-        }
-        if(Bullet3.x==-60){
-            Bullet3.x=290;
-            Bullet3.y=randomInteger(60,90);
-        }
-        window.requestAnimationFrame(movingBullet);
 
-    } 
-    function checkCollide(char,a1,a2,a3){
-        if((char[0]+5<=a1[0]+10)&&(char[0]-5>=a1[0]-10)&&(char[1]>=a1[1]-2)&&(char[1]<=a1[1]+2)){
-            alert("you are dead")
-            console.log("arrow1 "+a1+" Bird "+char)
-        }
-        if((char[0]+5<=a2[0]+10)&&(char[0]-5>=a2[0]-10)&&(char[1]>=a2[1]-2)&&(char[1]<=a2[1]+2)){
-            alert("you are dead")
-            console.log("arrow2 "+a2+" Bird "+char)
-        }
-        if((char[0]+5<=a3[0]+10)&&(char[0]-5>=a3[0]-10)&&(char[1]>=a3[1]-2)&&(char[1]<=a3[1]+2)){
-            alert("you are dead")
-            console.log("arrow3 "+a3+" Bird "+char)
-        }
+    function backgroundClass(width,height,baseImage,scrollSpeed){
+    this.background=document.getElementById('BackgroundLayer');
+    this.background.width=800;
+    this.background.height=600;  
+    this.width=width
+    this.height=height
+    this.img=new Image()
+    this.self=this
+    this.img.src=baseImage
+    this.imgWidth = 800;
+    this.scrollSpeed=scrollSpeed;
     }
-    movingBullet();
-    let nhay = window.addEventListener("keypress",whenPressSpace);  //chim nhay
+
+    backgroundClass.prototype.InitContext= function(){
+        this.ctxBack=this.background.getContext('2d'); 
+    }
+
+
+    backgroundClass.prototype.running=function(self){
+        self.ctxBack.drawImage(self.img,self.imgWidth, 0); 
+        if(self.background .width+self.imgWidth<800){ 
+        self.ctxBack.drawImage(self.img,self.background.width+self.imgWidth,0); 
+        }
+        else {
+            self.ctxBack.drawImage(self.img,-(self.background.width-self.imgWidth),0)
+        }
+        self.imgWidth -= self.scrollSpeed; 
+        if (self.imgWidth == -self.background.width){
+            self.imgWidth = 800; 
+        }
+        window.requestAnimationFrame(function() {self.running(self)});
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    function BulletRain(self1,self2,self3,self4,chim,Banner){
+        self1.layer.clearRect(0, 0, 800, 600)
+        self1.movingBullet(self1,5,-10,0,30)
+        self2.movingBullet(self2,6,-90,40,60)  
+        self3.movingBullet(self3,8,-10,60,100)
+        self4.movingCoin(self4,2,-120,0,110)
+        self1.checkCollide(self1,chim);  
+        self2.checkCollide(self2,chim);  
+        self3.checkCollide(self3,chim);
+        self4.checkCoinCollide(self4,chim);
+        window.requestAnimationFrame(function() {BulletRain(self1,self2,self3,self4,chim,Banner)});
+    }
+    
+    function WaitScreen(self1,self2,self3,self4,Banner,background){
+        Banner.init(0,80,800,600,ctxBullet,true)
+        self1.layer.clearRect(0, 0, 800, 600)
+        self1.movingBullet(self1,5,-10,0,30)
+        self2.movingBullet(self2,6,-90,40,60)  
+        self3.movingBullet(self3,8,-10,60,100)
+        self4.movingCoin(self4,2,-120,0,110)
+        Banner.StartBanner(Banner.self);
+        if(isStarted==true){
+            self1.layer.clearRect(0, 0, 800, 600)
+            return;
+        }
+        window.requestAnimationFrame(function() {WaitScreen(self1,self2,self3,self4,Banner)});
+    }
+    function deadScreen(){
+        alert('You are dead\n'+'Score '+score);
+        location.reload();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////// ////////
+    
+    let Bullet=new ImageObj(); 
+    let Bullet2=new ImageObj(); 
+    let Bullet3=new ImageObj();
+    let Bullet4=new ImageObj();
+    let Banner= new ImageObj();
+    let coin= new ImageObj();
+    let bird= new ImageObj();
+    let BlueSkyBG=new backgroundClass(ScreenWidth,ScreenHeight,"PixelArt.png",bgSpeed)
+    Bullet.init(0,5,800,600,ctxBullet,true);
+    Bullet2.init(0,50,800,600,ctxBullet,true);
+    Bullet3.init(0,80,800,600,ctxBullet,true);
+    Bullet4.init(0,0,800,600,ctxBullet,true); 
+    coin.init(0,80,800,600,ctxBullet,true);
+    BlueSkyBG.InitContext();
+    BlueSkyBG.running(BlueSkyBG);
+    WaitScreen(Bullet,Bullet2,Bullet3,coin,Banner);
+    window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
+    
+    
+
+
+
     </script>
 </body>
 </html>
