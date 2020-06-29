@@ -47,7 +47,12 @@
     let BulletLayer = document.getElementById('bulletLayer'); 
     let ctxBullet = BulletLayer.getContext('2d'); 
     let score=0
-    let HighScore=0;
+    let HighScore;
+    if(HighScore==null&&window.localStorage.getItem('highScore')!=null){
+        HighScore=window.localStorage.getItem('highScore');
+    }
+
+
     let isStarted=false;
     let isDead=false;
     let background = document.getElementById('BackgroundLayer');  
@@ -136,8 +141,7 @@
 
     ImageObj.prototype.checkCollide=function (arrow,chim){
         if((chim.ToaDo[0]+3>=arrow.ToaDo[0])&&(chim.ToaDo[0]-3<=arrow.ToaDo[0] )&&(chim.ToaDo[1]+2>=arrow.ToaDo[1])&&(chim.ToaDo[1]-4<=arrow.ToaDo[1])){
-            HighScore=parseInt(window.localStorage.getItem('highScore'))
-            if(score>HighScore){
+            if(score>=HighScore){
             HighScore=score;
             window.localStorage.setItem('highScore', JSON.stringify(HighScore));
             }
