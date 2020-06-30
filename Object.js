@@ -15,6 +15,7 @@ if(window.localStorage.getItem('highScore')==null){
    window.localStorage.setItem('highScore', JSON.stringify(HighScore));
    console.log("highscore set =0")
 }
+
 function ImageObj(){
    this.bird=new Image();
    this.Arrow= new Image();
@@ -136,7 +137,7 @@ if((chim.ToaDo[0]+3>=coin.ToaDo[0])&&(chim.ToaDo[0]-3<=coin.ToaDo[0] )&&(chim.To
 ImageObj.prototype.whenPressSpace=function(event,self){
    if(event.keyCode==32){
     if(isStarted==false){
-        bird.setPositionValue(80,50,ctxMain,true);
+        bird.setPositionValue(BirdStartX,BirdStartY,ctxMain,true);
         isStarted=true;
         ArrowDraw(Arrow,Arrow2,Arrow3,coin,bird,Banner,scoreBoard); 
     }
