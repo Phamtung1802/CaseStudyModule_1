@@ -1,7 +1,6 @@
 ﻿let Arrow=new ImageObj(); 
 let Arrow2=new ImageObj(); 
 let Arrow3=new ImageObj();
-let Arrow4=new ImageObj();
 let Banner= new ImageObj();
 let coin= new ImageObj();
 let bird= new ImageObj();
@@ -10,7 +9,6 @@ let BlueSkyBG=new backgroundClass(ScreenWidth,ScreenHeight,"PixelArt.png",BgSpee
 Arrow.setPositionValue(0,0,ctxArrow,true);
 Arrow2.setPositionValue(0,0,ctxArrow,true);
 Arrow3.setPositionValue(0,0,ctxArrow,true);
-Arrow4.setPositionValue(0,0,ctxArrow,true); 
 coin.setPositionValue(0,0,ctxArrow,true);
 scoreBoard.setPositionValue(0,0,ctxArrow,true);
 BlueSkyBG.setPositionValueContext();
