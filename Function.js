@@ -43,8 +43,10 @@ function deadScoreBoard(self){
     self.layer.fillStyle ="Black";
     self.layer.fillText("GAME OVER!! ", GameOverX, GameOverY ); 
     self.layer.fillText(" SCORE "+score, FinalScoreX, FinalScoreY ); 
-    window.addEventListener("keypress",function replay(){
+    window.addEventListener("keypress",function replay(event){
+        if(event.keyCode==32){
         location.reload()
+        }
     });
     return;
 }

@@ -16,4 +16,5 @@ scoreBoard.setPositionValue(0,0,ctxArrow,true);
 BlueSkyBG.setPositionValueContext();
 BlueSkyBG.running(BlueSkyBG);
 WaitScreen(Arrow,Arrow2,Arrow3,coin,Banner);
-window.addEventListener("keypress",function() {bird.whenPressSpace(bird)})
+window.addEventListener("keypress",function(event) {bird.whenPressSpace(event,bird)
+console.log(event.keyCode)})

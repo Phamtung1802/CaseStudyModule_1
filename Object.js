@@ -127,23 +127,25 @@ ImageObj.prototype.checkArrowCollision=function (arrow,chim){
 ImageObj.prototype.checkCoinCollision=function (coin,chim){
 if((chim.ToaDo[0]+3>=coin.ToaDo[0])&&(chim.ToaDo[0]-3<=coin.ToaDo[0] )&&(chim.ToaDo[1]+7>=coin.ToaDo[1])&&(chim.ToaDo[1]-7<=coin.ToaDo[1])){
    score++;
-   coin.x=-30;
+   coin.x=-JumpHeight;
    console.log(score) 
    return;
    }
 }      
 
-ImageObj.prototype.whenPressSpace=function(self){
-   if(isStarted==false){
-       bird.setPositionValue(80,50,ctxMain,true);
-       isStarted=true;
-       ArrowDraw(Arrow,Arrow2,Arrow3,coin,bird,Banner,scoreBoard); 
-   }
-   self.ToaDoNhay=self.y;
-   if(self.Dropping==true){
-       self.Dropping=false;
-       self.jumpBird(self);
-   }   
+ImageObj.prototype.whenPressSpace=function(event,self){
+   if(event.keyCode==32){
+    if(isStarted==false){
+        bird.setPositionValue(80,50,ctxMain,true);
+        isStarted=true;
+        ArrowDraw(Arrow,Arrow2,Arrow3,coin,bird,Banner,scoreBoard); 
+    }
+    self.ToaDoNhay=self.y;
+    if(self.Dropping==true){
+        self.Dropping=false;
+        self.jumpBird(self);
+    }   
+    }
 } 
 
 function randomInteger(min, max) {
