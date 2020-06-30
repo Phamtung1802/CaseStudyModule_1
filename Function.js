@@ -42,7 +42,7 @@ function deadScoreBoard(self){
     self.layer.font="13px Tahoma";
     self.layer.fillStyle ="Black";
     self.layer.fillText("GAME OVER!! ", GameOverX, GameOverY ); 
-    self.layer.fillText(" SCORE "+score, FinalScoreX, FinalScoreY ); 
+    self.layer.fillText("SCORE "+score, FinalScoreX, FinalScoreY ); 
     self.layer.fillText("Press Space to Play Again", FinalScoreX, FinalScoreY +15); 
     window.addEventListener("keypress",function replay(event){
         if(event.keyCode==32){
