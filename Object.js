@@ -45,7 +45,7 @@ ImageObj.prototype.drop=function(self){
            return;
        }
        self.ToaDo=[self.x,self.y];
-   }
+   } 
    if(self.y>=GroundLevel){
        turnToDead();
        return;
@@ -82,8 +82,7 @@ ImageObj.prototype.jumpBird=function(self){
 
 ImageObj.prototype.drawFlyingArrow=function(self,num1,num2,num4,num5){
    self.layer.drawImage(self.Arrow,self.x-=num1,self.y)
-   self.ToaDo[0]=self.x;
-   self.ToaDo[1]=self.y;
+   self.ToaDo=[self.x,self.y];
    if(self.x<num2){
        self.x=ArrowRestartX;
        self.y=randomInteger(num4,num5);  
@@ -96,13 +95,13 @@ ImageObj.prototype.drawScore=function(self){
    self.layer.fillText("score "+ score, ScoreX, ScoreY ); 
 
 }
-   ImageObj.prototype.drawFlyingCoin=function(self,num1,num2,num4,num5,chim){
-   self.layer.drawImage(self.coin,self.x-=num1,self.y)
-   self.ToaDo[0]=self.x;
-   self.ToaDo[1]=self.y;
-   if(self.x<num2){
-       self.x=CoinRestartX;
-       self.y=randomInteger(num4,num5);    
+
+ImageObj.prototype.drawFlyingCoin=function(self,num1,num2,num4,num5,chim){
+self.layer.drawImage(self.coin,self.x-=num1,self.y)
+self.ToaDo=[self.x,self.y];
+if(self.x<num2){
+    self.x=CoinRestartX;
+    self.y=randomInteger(num4,num5);    
    }  
 }
 
@@ -146,6 +145,7 @@ ImageObj.prototype.whenPressSpace=function(self){
        self.jumpBird(self);
    }   
 } 
+
 function randomInteger(min, max) {
 return Math.floor(Math.random() * (max - min + 1)) + min;
 }
